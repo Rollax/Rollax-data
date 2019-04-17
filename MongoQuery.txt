@@ -1,0 +1,68 @@
+Query 1:
+SQL
+SELECT * FROM employees;
+MongoDB
+db.employees.find()
+
+Query 2:
+SQL
+SELECT name. salary FROM emplyees;
+MongoDB
+db.employees.find(
+{}, 
+{name: 1, salary: 1}
+)
+
+Query 3:
+SQL		SELECT last_name, salary from employees WHERE name = “Ravi”;
+MongoDB	db.employees.find({name: “Ravi”}, {last_name: 1, salary: 1, _id:0})
+Query 4:
+SQL	SELECT DISTINCT last_name, salary from employees WHERE salary > 1000000;
+MongoDB	db.employees.distinct({salary : {$gt: 1000000}}, {last_name: 1, 
+				salary: 1, _id: 0})
+
+Query 5:
+Count the numbers of employees whose names have partial string
+	“kar” in it – must be case insensitive
+	db.employees.find({name: “kar” }).count()
+
+	db.employees.find({name: {$regex: /kar/i} }).count()
+
+Query 6:
+Same, but last_name start with “Tendul” 
+
+	db.employees.find({name: {$regex: /^Tendul/} }).count()
+Same with “Ten” and ends with “kar”
+	
+	 db.employees.find({name: {$regex: /^Ten.*kar$/} }).count()
+
+
+Find items which are tagged as “popular” or “organic”
+db.inventory.find({tags: {$in: [“popular”, “organic”]}})
+Find items which are not tagged as “popular” nor “organic”
+db.inventory.find({tags: {$nin: [“popular”, “organic”]}})
+Find the 2nd and 3rd elements or tags
+db.inventory.find({}, {tags: {$slice: [1, 2]}}}
+
+db.inventory.find({}, {tags: {$slice: -2}}}
+Find a document whose 2nd element in tags is “summer”
+db.inventory.find({}, {tags.1: “summer”}
+
+# Compound statements
+db.inventory.find({
+	$and : [
+		{$or: [{price: 3.99}, {price: 4.99}]}
+		{$or: [{rating: “good”}, qty: {$lt : 20}]}
+		{item: {$ne: “Coors”}}
+	]
+})
+
+# Queries over nested elements
+
+db.users.find({‘points.0.points’: {$lte: 80}})
+
+db.users.find({‘points.points’: {$lte: 80}})
+
+db.users.find({‘points.points’: {$lte: 81}, 
+	“points.bonus”: 20} {_id: 0, points.:1})
+
